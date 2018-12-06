@@ -16,7 +16,7 @@ def twitterScraper():
     #firefox 브라우져 다운로드 필요
     binary=FirefoxBinary("C:/Program Files/Mozilla Firefox/firefox.exe")  
     #geckodriver.exe 다운로드 후 본인환경에 맞게 경로 수정
-    browser=webdriver.Firefox(executable_path='/content/geckodriver.exe',firefox_binary=binary) 
+    browser=webdriver.Firefox(executable_path='C:/Program Files/geckodriver/geckodriver.exe',firefox_binary=binary) 
     
     print "검색어 입력"
     title = raw_input().decode("cp949").encode("utf-8")
