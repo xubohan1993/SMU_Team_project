@@ -13,9 +13,11 @@ from selenium.webdriver.common.keys import Keys
 import datetime as dt
 
 def twitterScraper():
-    binary=FirefoxBinary("C:/Program Files/Mozilla Firefox/firefox.exe")
-    browser=webdriver.Firefox(executable_path='/content/geckodriver.exe',firefox_binary=binary)
-
+    #firefox 브라우져 다운로드 필요
+    binary=FirefoxBinary("C:/Program Files/Mozilla Firefox/firefox.exe")  
+    #geckodriver.exe 다운로드 후 본인환경에 맞게 경로 수정
+    browser=webdriver.Firefox(executable_path='/content/geckodriver.exe',firefox_binary=binary) 
+    
     print "검색어 입력"
     title = raw_input().decode("cp949").encode("utf-8")
 
@@ -25,8 +27,6 @@ def twitterScraper():
     month_s = int(raw_input())
     print "시작 일 입력"
     day_s = int(raw_input())
-
-    
     
     print "종료 연도 입력"
     year_e = int(raw_input())
@@ -35,25 +35,13 @@ def twitterScraper():
     print "종료 일 입력"
     day_e = int(raw_input())
 
-
     startdate=dt.date(year_s,month_s,day_s)
-    # startdate_str=str(startdate)
 
-    untildate=startdate + dt.timedelta(days=1)
-    # untildate_str=str(untildate)
+    untildate = startdate + dt.timedelta(days=1)
 
     enddate=dt.date(year_e,month_e,day_e)
-    # enddate_str=str(enddate)
-
-    # pre_params= title+" since:"+startdate_str+" until:"+untildate_str 
 
     url = "https://twitter.com/search?"
-    # params=urllib.urlencode({"q":pre_params})
-    # headers={
-    #   "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36"
-    # }
-
-    # url2=url+params
 
     totalfreq = []
     tweetContents = []
@@ -64,6 +52,7 @@ def twitterScraper():
         untildate_str=str(untildate)
         pre_params= title+" since:"+startdate_str+" until:"+untildate_str
         params=urllib.urlencode({"q":pre_params})
+       
         url2=url+params
 
         browser.get(url2)
@@ -71,11 +60,12 @@ def twitterScraper():
         soup=BeautifulSoup(html,"html.parser")
 
         lastHeight = browser.execute_script("return document.body.scrollHeight")
+        
         wordfreq=0
 
         while True:
                 dailyfreq={'Date':startdate}
-    #             i=0
+                
                 tweets=soup.find_all("p",{"class":"TweetTextSize"})
                 wordfreq += len(tweets)
                 for i in tweets:
@@ -85,7 +75,7 @@ def twitterScraper():
                     tweetContents.append(dailytweet)
 
                 browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                time.sleep(2)
+                time.sleep(2)  #인터넷 환경이 좋지 않을 경우, 숫자크기 크게
 
                 newHeight = browser.execute_script("return document.body.scrollHeight")
                 print newHeight
@@ -109,7 +99,7 @@ def twitterScraper():
                     untildate+=dt.timedelta(days=1)
                     dailyfreq={}
                     break
-    #             i+=1
+
                 lastHeight=newHeight
     
     df1 = pd.DataFrame(totalfreq)
@@ -120,7 +110,8 @@ def twitterScraper():
     fileName1 = title+'daily_tweets.csv'
     fileName2 = title+'tweetContents.csv'
     
-    file1= os.path.join(my, 'Movie_twitter', fileName1)
+    # os.getcwd에서 나온 워킹디렉터리에 Movie_twitter 폴더 작성 필요
+    file1= os.path.join(my, 'Movie_twitter', fileName1) 
     file2 = os.path.join(my, 'Movie_twitter', fileName2)
 
     df1.to_csv(file1.decode('utf-8'), header=True, index = False, encoding='utf-8')
