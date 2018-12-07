@@ -70,8 +70,9 @@ def twitterScraper():
                 wordfreq += len(tweets)
                 for i in tweets:
                     dailytweet={}
+                    dailytweet['contents']=i.text.replace(',',' ')
                     dailytweet['date']=startdate
-                    dailytweet['contents']=i.text
+                    
                     tweetContents.append(dailytweet)
 
                 browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
